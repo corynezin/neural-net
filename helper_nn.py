@@ -11,7 +11,7 @@ def activation(a,fcn):
   if fcn == 'relu':
     return max(0,a)  
   if fcn == 'sigmoid':
-    return 1.0 / (1 + math.exp(-a))
+    return 1.0 / (1.0 + math.exp(-a))
 
 def transpose(A):
   T = []
@@ -35,7 +35,7 @@ def activation_derivative(a,fcn):
     d = 0 if a < 0 else 1
     return(d)
   if fcn == 'sigmoid':
-    return activation(a,'sigmoid') * (1 - activation(a,'sigmoid'))
+    return activation(a,'sigmoid') * (1.0 - activation(a,'sigmoid'))
 
 def back_prop_learning(example,y,network):
   alpha = 0.1
@@ -49,7 +49,6 @@ def back_prop_learning(example,y,network):
   # Calculate activations
   for x in example:
     a[0].append(x)
-    input_layer.append(x)
   for w in hidden_layer:
     inn[0].append(inner_product(w,a[0]))
     a[1].append(activation(inn[0][-1],'sigmoid'))
@@ -63,19 +62,18 @@ def back_prop_learning(example,y,network):
     delta[1].append(activation_derivative(inn[1][j],'sigmoid') * (y - a[2][j]))
 
   output_layer_t = transpose(output_layer)
-  inn[0].append(-1.0)
   # Delta one layer down
-  for i in range(len(output_layer[0])):
+  for i in range(len(hidden_layer)):
     delta[0].append(activation_derivative(inn[0][i],'sigmoid') * \
       inner_product(output_layer_t[i],delta[1]))
 
   for i in range(len(output_layer)):
     for j in range(len(output_layer[i])):
-      output_layer[i][j] = output_layer[i][j] + alpha * a[1][j] * delta[1][i]
+      output_layer[i][j] = output_layer[i][j] + (alpha * a[1][j] * delta[1][i])
 
   for i in range(len(hidden_layer)):
     for j in range(len(hidden_layer[i])):
-      hidden_layer[i][j] = hidden_layer[i][j] + alpha * a[0][j] * delta[0][i]
+      hidden_layer[i][j] = hidden_layer[i][j] + (alpha * a[0][j] * delta[0][i])
 
   network[0] = []
   network[1] = hidden_layer

@@ -65,7 +65,12 @@ def back_prop_learning(example,y,network):
   # Delta one layer down
   for i in range(len(hidden_layer)):
     delta[0].append(activation_derivative(inn[0][i],'sigmoid') * \
-      inner_product(output_layer_t[i],delta[1]))
+      inner_product(output_layer_t[i+1],delta[1]))
+
+#  a0_t = transpose(a[0])
+#  for i in range(len(input_layer)):
+#    delta[0].append(activation_derivative(a[0][i],'sigmoid') * \
+#      inner_product(a0_t[i],delta[0]))
 
   for i in range(len(output_layer)):
     for j in range(len(output_layer[i])):
